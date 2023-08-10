@@ -16,6 +16,4 @@ public abstract class UserAccount {
 
   protected String id;
   protected Role role;
-  protected String username;
-  protected String password;
 }
