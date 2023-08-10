@@ -32,11 +32,10 @@ class AdminAccountApplicationServiceTest extends UnitTest {
   private BCryptPasswordEncoder passwordEncoder;
 
   private AdminAccountApplicationService adminAccountApplicationService;
-
   @BeforeEach
   void setUp() {
     adminAccountApplicationService = new AdminAccountApplicationService(adminAccountService,
-        tokenUtil, passwordEncoder);
+        tokenUtil,passwordEncoder);
   }
 
   @Test
