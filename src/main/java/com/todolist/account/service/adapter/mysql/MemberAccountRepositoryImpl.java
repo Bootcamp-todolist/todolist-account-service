@@ -5,6 +5,7 @@ import com.todolist.account.service.adapter.mysql.models.MemberAccountPersistMod
 import com.todolist.account.service.domain.MemberAccountRepository;
 import com.todolist.account.service.domain.models.MemberAccount;
 import java.util.List;
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -24,5 +25,15 @@ public class MemberAccountRepositoryImpl implements MemberAccountRepository {
   @Override
   public List<MemberAccount> findAll() {
     return MemberAccountPersistModelMapper.MAPPER.toDomain(memberAccountJpaRepository.findAll());
+  }
+
+  @Override
+  public MemberAccount findById(String memberId) {
+    MemberAccountPersistModel accountPersistModel = memberAccountJpaRepository.findById(
+        memberId).orElse(null);
+    if (Objects.isNull(accountPersistModel)) {
+      return null;
+    }
+    return MemberAccountPersistModelMapper.MAPPER.toDomain(accountPersistModel);
   }
 }

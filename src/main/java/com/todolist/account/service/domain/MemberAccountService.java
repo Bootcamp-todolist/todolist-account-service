@@ -16,4 +16,8 @@ public class MemberAccountService {
   public List<MemberAccount> findAll() {
     return memberAccountRepository.findAll();
   }
+
+  public MemberAccount findById(String memberId) {
+    return memberAccountRepository.findById(memberId);
+  }
 }

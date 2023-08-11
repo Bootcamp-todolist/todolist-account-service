@@ -3,8 +3,10 @@ package com.todolist.account.service.adapter.http;
 import static com.todolist.account.service.common.Constant.USER_ID;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -50,5 +52,15 @@ class AdminMemberControllerTest extends HttpControllerTest {
     mockMvc.perform(get("/admin/members"))
         .andExpect(status().isOk());
     verify(memberAccountApplicationService).getAllMembers();
+  }
+
+  @Test
+  void should_delete_member_successfully() throws Exception {
+    doNothing().when(memberAccountApplicationService).deleteMember(anyString(),anyString());
+
+    mockMvc.perform(delete("/admin/member/1")
+            .header(USER_ID, "admin"))
+        .andExpect(status().isOk());
+    verify(memberAccountApplicationService).deleteMember(anyString(),anyString());
   }
 }

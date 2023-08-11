@@ -10,4 +10,6 @@ public interface MemberAccountRepository {
   MemberAccount save(MemberAccount memberAccount);
 
   List<MemberAccount> findAll();
+
+  MemberAccount findById(String memberId);
 }
