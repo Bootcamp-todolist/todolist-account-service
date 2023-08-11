@@ -8,7 +8,7 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
 import com.todolist.account.service.UnitTest;
-import com.todolist.account.service.adapter.http.models.AdminLoginRequest;
+import com.todolist.account.service.adapter.http.models.AdminLoginCommand;
 import com.todolist.account.service.application.models.TokenDTO;
 import com.todolist.account.service.domain.AdminAccountService;
 import com.todolist.account.service.domain.models.AdminAccount;
@@ -45,14 +45,14 @@ class AdminAccountApplicationServiceTest extends UnitTest {
     AdminAccount adminAccount = AdminAccount.builder().username(username).password(password)
         .build();
     String token = "token";
-    AdminLoginRequest request = AdminLoginRequest.builder().username(username).password(password)
+    AdminLoginCommand request = AdminLoginCommand.builder().username(username).password(password)
         .build();
 
     doReturn(adminAccount).when(adminAccountService).findByUsername(username);
     doReturn(true).when(passwordEncoder).matches(any(), any());
     doReturn(token).when(tokenUtil).generateToken(adminAccount);
 
-    TokenDTO tokenDTO = adminAccountApplicationService.adminLogin(request);
+    TokenDTO tokenDTO = adminAccountApplicationService.login(request);
 
     assertThat(tokenDTO.getToken()).isEqualTo(token);
     verify(adminAccountService).findByUsername(any());
@@ -66,14 +66,14 @@ class AdminAccountApplicationServiceTest extends UnitTest {
     String wrongPassword = "wrong-password";
     AdminAccount adminAccount = AdminAccount.builder().username(username).password(password)
         .build();
-    AdminLoginRequest request = AdminLoginRequest.builder().username(username)
+    AdminLoginCommand request = AdminLoginCommand.builder().username(username)
         .password(wrongPassword)
         .build();
 
     doReturn(adminAccount).when(adminAccountService).findByUsername(username);
     doReturn(false).when(passwordEncoder).matches(any(), any());
 
-    var exception = catchThrowable(() -> adminAccountApplicationService.adminLogin(request));
+    var exception = catchThrowable(() -> adminAccountApplicationService.login(request));
 
     var businessException = (BusinessException) exception;
     assertThat(businessException.getHttpStatus()).isEqualTo(HttpStatus.UNAUTHORIZED);
@@ -84,13 +84,13 @@ class AdminAccountApplicationServiceTest extends UnitTest {
   void should_404_when_user_not_found() {
     String username = "user";
     String password = "password";
-    AdminLoginRequest request = AdminLoginRequest.builder().username(username)
+    AdminLoginCommand request = AdminLoginCommand.builder().username(username)
         .password(password)
         .build();
 
     doReturn(null).when(adminAccountService).findByUsername(username);
 
-    var exception = catchThrowable(() -> adminAccountApplicationService.adminLogin(request));
+    var exception = catchThrowable(() -> adminAccountApplicationService.login(request));
 
     var businessException = (BusinessException) exception;
     assertThat(businessException.getHttpStatus()).isEqualTo(HttpStatus.NOT_FOUND);

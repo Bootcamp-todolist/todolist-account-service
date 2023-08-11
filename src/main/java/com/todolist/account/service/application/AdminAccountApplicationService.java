@@ -1,7 +1,7 @@
 package com.todolist.account.service.application;
 
 import com.todolist.account.service.adapter.http.models.AdminAccountRegisterCommand;
-import com.todolist.account.service.adapter.http.models.AdminLoginRequest;
+import com.todolist.account.service.adapter.http.models.AdminLoginCommand;
 import com.todolist.account.service.application.models.TokenDTO;
 import com.todolist.account.service.domain.AdminAccountService;
 import com.todolist.account.service.domain.enums.Role;
@@ -23,20 +23,20 @@ public class AdminAccountApplicationService {
   private final TokenUtil tokenUtil;
   private final BCryptPasswordEncoder passwordEncoder;
 
-  public TokenDTO adminLogin(AdminLoginRequest adminLoginRequest) {
-    String username = adminLoginRequest.getUsername();
+  public TokenDTO login(AdminLoginCommand adminLoginCommand) {
+    String username = adminLoginCommand.getUsername();
     AdminAccount adminAccount = adminAccountService.findByUsername(username);
-    verifyAdminAccount(adminLoginRequest, adminAccount);
+    verifyAdminAccount(adminLoginCommand, adminAccount);
 
     return new TokenDTO(tokenUtil.generateToken(adminAccount));
   }
 
-  private void verifyAdminAccount(AdminLoginRequest adminLoginRequest, AdminAccount adminAccount) {
+  private void verifyAdminAccount(AdminLoginCommand adminLoginCommand, AdminAccount adminAccount) {
     if (Objects.isNull(adminAccount)) {
       throw new BusinessException(Error.USER_NOT_EXIST, HttpStatus.NOT_FOUND);
     }
 
-    boolean isPasswordCorrect = passwordEncoder.matches(adminLoginRequest.getPassword(),
+    boolean isPasswordCorrect = passwordEncoder.matches(adminLoginCommand.getPassword(),
         adminAccount.getPassword());
     if (Boolean.FALSE.equals(isPasswordCorrect)) {
       throw new BusinessException(Error.AUTHORIZE_FAILED, HttpStatus.UNAUTHORIZED);

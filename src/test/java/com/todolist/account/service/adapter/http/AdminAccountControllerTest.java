@@ -9,7 +9,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.todolist.account.service.HttpControllerTest;
-import com.todolist.account.service.adapter.http.models.AdminLoginRequest;
+import com.todolist.account.service.adapter.http.models.AdminLoginCommand;
 import com.todolist.account.service.application.AdminAccountApplicationService;
 import com.todolist.account.service.application.models.TokenDTO;
 import org.junit.jupiter.api.Test;
@@ -25,16 +25,16 @@ class AdminAccountControllerTest extends HttpControllerTest {
   @Test
   void should_return_TokenDTO_when_login_successful() throws Exception {
     TokenDTO tokenDTO = TokenDTO.builder().token("tokenDTO").build();
-    AdminLoginRequest loginRequest = AdminLoginRequest.builder().username("name")
+    AdminLoginCommand loginRequest = AdminLoginCommand.builder().username("name")
         .password("password").build();
 
-    when(adminAccountApplicationService.adminLogin(any())).thenReturn(tokenDTO);
+    when(adminAccountApplicationService.login(any())).thenReturn(tokenDTO);
 
     mockMvc.perform(post("/admin/login")
             .contentType(MediaType.APPLICATION_JSON)
             .content(new ObjectMapper().writeValueAsString(loginRequest)))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.token").value("tokenDTO"));
-    verify(adminAccountApplicationService).adminLogin(any());
+    verify(adminAccountApplicationService).login(any());
   }
 }

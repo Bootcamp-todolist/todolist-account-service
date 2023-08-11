@@ -3,7 +3,7 @@ package com.todolist.account.service.adapter.http;
 import static com.todolist.account.service.common.Constant.USER_ID;
 
 import com.todolist.account.service.adapter.http.models.AdminAccountRegisterCommand;
-import com.todolist.account.service.adapter.http.models.AdminLoginRequest;
+import com.todolist.account.service.adapter.http.models.AdminLoginCommand;
 import com.todolist.account.service.application.AdminAccountApplicationService;
 import com.todolist.account.service.application.models.TokenDTO;
 import lombok.RequiredArgsConstructor;
@@ -21,8 +21,8 @@ public class AdminAccountController {
   private final AdminAccountApplicationService adminAccountApplicationService;
 
   @PostMapping("/login")
-  public TokenDTO adminLogin(@RequestBody AdminLoginRequest adminLoginRequest) {
-    return adminAccountApplicationService.adminLogin(adminLoginRequest);
+  public TokenDTO adminLogin(@RequestBody AdminLoginCommand adminLoginCommand) {
+    return adminAccountApplicationService.login(adminLoginCommand);
   }
 
   @PostMapping("/register")
