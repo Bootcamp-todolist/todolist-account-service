@@ -5,6 +5,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -42,5 +43,12 @@ class AdminMemberControllerTest extends HttpControllerTest {
         .andExpect(status().isCreated());
     verify(memberAccountApplicationService).createMember(any(CreateMemberCommand.class),
         anyString());
+  }
+
+  @Test
+  void should_get_all_members_successfully() throws Exception {
+    mockMvc.perform(get("/admin/members"))
+        .andExpect(status().isOk());
+    verify(memberAccountApplicationService).getAllMembers();
   }
 }

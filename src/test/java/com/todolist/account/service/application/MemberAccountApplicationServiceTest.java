@@ -7,8 +7,10 @@ import static org.mockito.Mockito.verify;
 
 import com.todolist.account.service.UnitTest;
 import com.todolist.account.service.application.models.CreateMemberCommand;
+import com.todolist.account.service.application.models.MemberAccountDTO;
 import com.todolist.account.service.domain.MemberAccountService;
 import com.todolist.account.service.domain.models.MemberAccount;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -49,4 +51,21 @@ class MemberAccountApplicationServiceTest extends UnitTest {
     verify(memberAccountService).save(any());
   }
 
+  @Test
+  void should_get_all_members() {
+    MemberAccount memberAccount1 = MemberAccount.builder().username("username")
+        .password("encode-password")
+        .createdBy("admin").build();
+    MemberAccount memberAccount2 = MemberAccount.builder().username("username")
+        .password("encode-password")
+        .createdBy("admin").build();
+    List<MemberAccount> memberAccounts = List.of(memberAccount1, memberAccount2);
+
+    doReturn(memberAccounts).when(memberAccountService).findAll();
+
+    List<MemberAccountDTO> allMembers = memberAccountApplicationService.getAllMembers();
+
+    assertThat(allMembers).usingRecursiveComparison().isEqualTo(memberAccounts);
+    verify(memberAccountService).findAll();
+  }
 }

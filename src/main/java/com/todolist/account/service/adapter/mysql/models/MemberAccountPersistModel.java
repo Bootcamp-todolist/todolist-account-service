@@ -28,7 +28,8 @@ public class MemberAccountPersistModel extends Auditable {
   private String id;
   private String username;
   private String password;
-  private boolean isDeleted;
+
+  private boolean deleted;
   @Enumerated(STRING)
   private Role role;
 }

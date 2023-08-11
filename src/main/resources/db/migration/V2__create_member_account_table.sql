@@ -4,7 +4,7 @@ CREATE TABLE  IF NOT EXISTS member_account
     username     VARCHAR(255) NOT NULL unique,
     password     VARCHAR(255) NOT NULL,
     role         VARCHAR(36),
-    is_deleted boolean default false,
+    deleted boolean default false,
     created_by   VARCHAR(255) NOT NULL,
     created_time timestamp    NOT NULL,
     updated_by   VARCHAR(255),
