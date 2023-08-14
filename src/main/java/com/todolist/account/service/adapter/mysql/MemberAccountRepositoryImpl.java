@@ -36,4 +36,10 @@ public class MemberAccountRepositoryImpl implements MemberAccountRepository {
     }
     return MemberAccountPersistModelMapper.MAPPER.toDomain(accountPersistModel);
   }
+
+  @Override
+  public MemberAccount findByUsername(String username) {
+    return MemberAccountPersistModelMapper.MAPPER.toDomain(
+        memberAccountJpaRepository.findByUsername(username));
+  }
 }

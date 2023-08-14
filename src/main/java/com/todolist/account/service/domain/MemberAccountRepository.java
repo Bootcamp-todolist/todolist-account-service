@@ -12,4 +12,6 @@ public interface MemberAccountRepository {
   List<MemberAccount> findAll();
 
   MemberAccount findById(String memberId);
+
+  MemberAccount findByUsername(String username);
 }

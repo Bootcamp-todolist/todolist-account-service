@@ -4,15 +4,19 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
 import com.todolist.account.service.UnitTest;
+import com.todolist.account.service.adapter.http.models.MemberLoginCommand;
 import com.todolist.account.service.application.models.CreateMemberCommand;
 import com.todolist.account.service.application.models.MemberAccountDTO;
+import com.todolist.account.service.application.models.TokenDTO;
 import com.todolist.account.service.domain.MemberAccountService;
 import com.todolist.account.service.domain.models.MemberAccount;
 import com.todolist.account.service.exception.BusinessException;
 import com.todolist.account.service.exception.Error;
+import com.todolist.account.service.security.TokenUtil;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -27,13 +31,16 @@ class MemberAccountApplicationServiceTest extends UnitTest {
   private MemberAccountService memberAccountService;
   @Mock
   private BCryptPasswordEncoder passwordEncoder;
+  @Mock
+  private TokenUtil tokenUtil;
+
 
   private MemberAccountApplicationService memberAccountApplicationService;
 
   @BeforeEach
   void setUp() {
     memberAccountApplicationService = new MemberAccountApplicationService(memberAccountService,
-        passwordEncoder);
+        passwordEncoder, tokenUtil);
   }
 
   @Test
@@ -100,10 +107,73 @@ class MemberAccountApplicationServiceTest extends UnitTest {
 
     doReturn(null).when(memberAccountService).findById(id);
 
-    var exception = catchThrowable(() -> memberAccountApplicationService.deleteMember(id,"admin"));
+    var exception = catchThrowable(() -> memberAccountApplicationService.deleteMember(id, "admin"));
 
     var businessException = (BusinessException) exception;
     assertThat(businessException.getHttpStatus()).isEqualTo(HttpStatus.NOT_FOUND);
     assertThat(businessException.getError()).isEqualTo(Error.USER_NOT_EXIST);
+  }
+
+
+  @Test
+  void should_login_successfully() {
+    String username = "user";
+    String password = "password";
+    String token = "token";
+    MemberAccount memberAccount = MemberAccount.builder().username(username).password(password)
+        .build();
+    MemberLoginCommand memberLoginCommand = MemberLoginCommand.builder().username(username)
+        .password(password)
+        .build();
+
+    doReturn(memberAccount).when(memberAccountService).findByUsername(username);
+    doReturn(true).when(passwordEncoder).matches(any(), any());
+    doReturn(token).when(tokenUtil).generateToken(memberAccount);
+
+    TokenDTO tokenDTO = memberAccountApplicationService.login(memberLoginCommand);
+
+    assertThat(tokenDTO.getToken()).isEqualTo(token);
+    verify(memberAccountService).findByUsername(any());
+    verify(tokenUtil).generateToken(any());
+  }
+
+  @Test
+  void should_401_when_password_incorrect() {
+    String username = "user";
+    String password = "password";
+    String wrongPassword = "wrong-password";
+    MemberAccount memberAccount = MemberAccount.builder().username(username).password(password)
+        .build();
+    MemberLoginCommand memberLoginCommand = MemberLoginCommand.builder().username(username)
+        .password(wrongPassword)
+        .build();
+
+    doReturn(memberAccount).when(memberAccountService).findByUsername(username);
+    doReturn(false).when(passwordEncoder).matches(any(), any());
+
+    var exception = catchThrowable(() -> memberAccountApplicationService.login(memberLoginCommand));
+
+    var businessException = (BusinessException) exception;
+    assertThat(businessException.getHttpStatus()).isEqualTo(HttpStatus.UNAUTHORIZED);
+    assertThat(businessException.getError()).isEqualTo(Error.AUTHORIZE_FAILED);
+    verify(tokenUtil, never()).generateToken(any());
+  }
+
+  @Test
+  void should_404_when_user_not_found() {
+    String username = "user";
+    String password = "password";
+    MemberLoginCommand memberLoginCommand = MemberLoginCommand.builder().username(username)
+        .password(password)
+        .build();
+
+    doReturn(null).when(memberAccountService).findByUsername(username);
+
+    var exception = catchThrowable(() -> memberAccountApplicationService.login(memberLoginCommand));
+
+    var businessException = (BusinessException) exception;
+    assertThat(businessException.getHttpStatus()).isEqualTo(HttpStatus.NOT_FOUND);
+    assertThat(businessException.getError()).isEqualTo(Error.USER_NOT_EXIST);
+    verify(tokenUtil, never()).generateToken(any());
   }
 }

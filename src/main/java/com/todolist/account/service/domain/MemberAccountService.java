@@ -20,4 +20,8 @@ public class MemberAccountService {
   public MemberAccount findById(String memberId) {
     return memberAccountRepository.findById(memberId);
   }
+
+  public MemberAccount findByUsername(String username) {
+    return memberAccountRepository.findByUsername(username);
+  }
 }
