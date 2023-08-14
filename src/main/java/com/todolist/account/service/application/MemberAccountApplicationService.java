@@ -31,14 +31,14 @@ public class MemberAccountApplicationService {
   private final TokenUtil tokenUtil;
 
   @Transactional
-  public MemberAccount createMember(CreateMemberCommand createMemberCommand, String userId) {
+  public MemberAccountDTO createMember(CreateMemberCommand createMemberCommand, String userId) {
     validateUsername(createMemberCommand);
     String password = createMemberCommand.getPassword();
     createMemberCommand.setPassword(passwordEncoder.encode(password));
     MemberAccount memberAccount = CreateMemberCommandMapper.MAPPER.toDomain(createMemberCommand,
         userId);
     memberAccount.setRole(Role.USER);
-    return memberAccountService.save(memberAccount);
+    return MemberAccountDTOMapper.MAPPER.toDTO(memberAccountService.save(memberAccount));
   }
 
   private void validateUsername(CreateMemberCommand createMemberCommand) {

@@ -14,4 +14,6 @@ public abstract class MemberAccountDTOMapper {
       MemberAccountDTOMapper.class);
 
   public abstract List<MemberAccountDTO> toDTO(List<MemberAccount> memberAccounts);
+
+  public abstract MemberAccountDTO toDTO(MemberAccount memberAccount);
 }

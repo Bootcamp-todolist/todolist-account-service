@@ -5,7 +5,6 @@ import static com.todolist.account.service.common.Constant.USER_ID;
 import com.todolist.account.service.application.MemberAccountApplicationService;
 import com.todolist.account.service.application.models.CreateMemberCommand;
 import com.todolist.account.service.application.models.MemberAccountDTO;
-import com.todolist.account.service.domain.models.MemberAccount;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -28,7 +27,7 @@ public class AdminMemberController {
 
   @PostMapping("/member")
   @ResponseStatus(HttpStatus.CREATED)
-  public MemberAccount createMember(@RequestBody CreateMemberCommand createMemberCommand,
+  public MemberAccountDTO createMember(@RequestBody CreateMemberCommand createMemberCommand,
       @RequestHeader(USER_ID) String userId) {
     return memberAccountApplicationService.createMember(createMemberCommand, userId);
   }

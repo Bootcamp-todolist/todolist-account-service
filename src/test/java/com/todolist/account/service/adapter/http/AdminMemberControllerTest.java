@@ -15,7 +15,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.todolist.account.service.HttpControllerTest;
 import com.todolist.account.service.application.MemberAccountApplicationService;
 import com.todolist.account.service.application.models.CreateMemberCommand;
-import com.todolist.account.service.domain.models.MemberAccount;
+import com.todolist.account.service.application.models.MemberAccountDTO;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -34,7 +34,7 @@ class AdminMemberControllerTest extends HttpControllerTest {
     CreateMemberCommand command = CreateMemberCommand.builder()
         .username(username).password(password).build();
     String admin = "admin";
-    MemberAccount memberAccount = MemberAccount.builder().build();
+    MemberAccountDTO memberAccount = MemberAccountDTO.builder().build();
 
     when(memberAccountApplicationService.createMember(command, admin)).thenReturn(memberAccount);
 

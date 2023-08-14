@@ -56,7 +56,7 @@ class MemberAccountApplicationServiceTest extends UnitTest {
 
     doReturn(memberAccount).when(memberAccountService).save(any());
 
-    MemberAccount member = memberAccountApplicationService.createMember(command, admin);
+    MemberAccountDTO member = memberAccountApplicationService.createMember(command, admin);
 
     assertThat(member).isNotNull();
     verify(passwordEncoder).encode(any());
