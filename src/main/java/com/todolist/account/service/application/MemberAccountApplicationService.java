@@ -43,7 +43,7 @@ public class MemberAccountApplicationService {
 
   private void validateUsername(CreateMemberCommand createMemberCommand) {
     String username = createMemberCommand.getUsername();
-    MemberAccount memberAccountByUsername = memberAccountService.findByUsername(username);
+    MemberAccount memberAccountByUsername = memberAccountService.findByUsernameAndDeletedFalse(username);
     if (Objects.nonNull(memberAccountByUsername)){
       throw new BusinessException(Error.REPEATED_USER_NAME,HttpStatus.NOT_FOUND);
     }
@@ -66,7 +66,7 @@ public class MemberAccountApplicationService {
 
   public TokenDTO login(MemberLoginCommand memberLoginCommand) {
     String username = memberLoginCommand.getUsername();
-    MemberAccount memberAccount = memberAccountService.findByUsername(username);
+    MemberAccount memberAccount = memberAccountService.findByUsernameAndDeletedFalse(username);
     verifyMemberAccount(memberLoginCommand,memberAccount);
 
     return new TokenDTO(tokenUtil.generateToken(memberAccount));

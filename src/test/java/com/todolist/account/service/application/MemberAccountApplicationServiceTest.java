@@ -126,14 +126,14 @@ class MemberAccountApplicationServiceTest extends UnitTest {
         .password(password)
         .build();
 
-    doReturn(memberAccount).when(memberAccountService).findByUsername(username);
+    doReturn(memberAccount).when(memberAccountService).findByUsernameAndDeletedFalse(username);
     doReturn(true).when(passwordEncoder).matches(any(), any());
     doReturn(token).when(tokenUtil).generateToken(memberAccount);
 
     TokenDTO tokenDTO = memberAccountApplicationService.login(memberLoginCommand);
 
     assertThat(tokenDTO.getToken()).isEqualTo(token);
-    verify(memberAccountService).findByUsername(any());
+    verify(memberAccountService).findByUsernameAndDeletedFalse(any());
     verify(tokenUtil).generateToken(any());
   }
 
@@ -148,7 +148,7 @@ class MemberAccountApplicationServiceTest extends UnitTest {
         .password(wrongPassword)
         .build();
 
-    doReturn(memberAccount).when(memberAccountService).findByUsername(username);
+    doReturn(memberAccount).when(memberAccountService).findByUsernameAndDeletedFalse(username);
     doReturn(false).when(passwordEncoder).matches(any(), any());
 
     var exception = catchThrowable(() -> memberAccountApplicationService.login(memberLoginCommand));
@@ -167,7 +167,7 @@ class MemberAccountApplicationServiceTest extends UnitTest {
         .password(password)
         .build();
 
-    doReturn(null).when(memberAccountService).findByUsername(username);
+    doReturn(null).when(memberAccountService).findByUsernameAndDeletedFalse(username);
 
     var exception = catchThrowable(() -> memberAccountApplicationService.login(memberLoginCommand));
 

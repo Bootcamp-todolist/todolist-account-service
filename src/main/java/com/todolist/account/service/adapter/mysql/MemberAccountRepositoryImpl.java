@@ -38,8 +38,8 @@ public class MemberAccountRepositoryImpl implements MemberAccountRepository {
   }
 
   @Override
-  public MemberAccount findByUsername(String username) {
+  public MemberAccount findByUsernameAndDeletedFalse(String username) {
     return MemberAccountPersistModelMapper.MAPPER.toDomain(
-        memberAccountJpaRepository.findByUsername(username));
+        memberAccountJpaRepository.findByUsernameAndDeletedFalse(username));
   }
 }

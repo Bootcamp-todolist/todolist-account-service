@@ -21,7 +21,7 @@ public class MemberAccountService {
     return memberAccountRepository.findById(memberId);
   }
 
-  public MemberAccount findByUsername(String username) {
-    return memberAccountRepository.findByUsername(username);
+  public MemberAccount findByUsernameAndDeletedFalse(String username) {
+    return memberAccountRepository.findByUsernameAndDeletedFalse(username);
   }
 }

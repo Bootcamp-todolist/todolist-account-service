@@ -13,5 +13,5 @@ public interface MemberAccountRepository {
 
   MemberAccount findById(String memberId);
 
-  MemberAccount findByUsername(String username);
+  MemberAccount findByUsernameAndDeletedFalse(String username);
 }
