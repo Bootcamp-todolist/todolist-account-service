@@ -32,12 +32,21 @@ public class MemberAccountApplicationService {
 
   @Transactional
   public MemberAccount createMember(CreateMemberCommand createMemberCommand, String userId) {
+    validateUsername(createMemberCommand);
     String password = createMemberCommand.getPassword();
     createMemberCommand.setPassword(passwordEncoder.encode(password));
     MemberAccount memberAccount = CreateMemberCommandMapper.MAPPER.toDomain(createMemberCommand,
         userId);
     memberAccount.setRole(Role.USER);
     return memberAccountService.save(memberAccount);
+  }
+
+  private void validateUsername(CreateMemberCommand createMemberCommand) {
+    String username = createMemberCommand.getUsername();
+    MemberAccount memberAccountByUsername = memberAccountService.findByUsername(username);
+    if (Objects.nonNull(memberAccountByUsername)){
+      throw new BusinessException(Error.REPEATED_USER_NAME,HttpStatus.NOT_FOUND);
+    }
   }
 
   public List<MemberAccountDTO> getAllMembers() {
