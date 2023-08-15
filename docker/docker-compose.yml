@@ -1,9 +1,9 @@
 version: '3.5'
 
 services:
-  mysql:
+  todolist-account:
     image: mysql:8.1
-    container_name: todolist-mysql
+    container_name: todolist-account
     environment:
       MYSQL_ROOT_PASSWORD: changeme
       MYSQL_DATABASE: todolist-account

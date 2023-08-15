@@ -58,7 +58,7 @@ public class HexagonalArchTest {
   }
 
   @ArchTest
-  static final ArchRule only_postgres_package_should_depend_on_jpa =
+  static final ArchRule only_mysql_package_should_depend_on_jpa =
       noClasses()
           .that().resideOutsideOfPackages("..mysql..", "..config..")
           .should().dependOnClassesThat().resideInAnyPackage("org.springframework.data.jpa..")
