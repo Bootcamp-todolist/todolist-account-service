@@ -1,4 +1,4 @@
-package com.todolist.account.service.adapter.http.models;
+package com.todolist.account.service.adapter.http;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
@@ -9,7 +9,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.todolist.account.service.HttpControllerTest;
-import com.todolist.account.service.adapter.http.MemberAccountController;
+import com.todolist.account.service.adapter.http.models.MemberLoginCommand;
 import com.todolist.account.service.application.MemberAccountApplicationService;
 import com.todolist.account.service.application.models.TokenDTO;
 import org.junit.jupiter.api.Test;
